@@ -1,7 +1,10 @@
 # Welcome to Docsumo python client documentation!
 [![Documentation Status](https://readthedocs.org/projects/docsumo/badge/?version=latest)](https://docsumo.readthedocs.io/en/latest/?badge=latest)
 
-For detail [Here is Documentation](https://docsumo.readthedocs.io/en/latest/index.html)
+For detail:
+- [Here is Documentation](https://docsumo.readthedocs.io/en/latest/index.html)  
+- [Postman Documentation](https://documenter.getpostman.com/view/4263853/S11LtdGN)
+
 
 # Install 
 ```bash
