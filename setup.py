@@ -24,8 +24,7 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Topic :: Scientific/Engineering",
-        "Topic :: Software Development",
-        "Topic :: Artifical Intelligence",
+        "Topic :: Software Development"
     ],
     zip_safe=False,
 )
