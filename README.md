@@ -22,8 +22,10 @@ source ~/.bashrc
 from docsumo import Docsumo
 
 doc = Docsumo()
+# OR
+# doc = Docsumo(apikey="fghhGh56HHJ...")
 
-# To get the user detail and user credit linit information
+# To get the user detail & credit limit.
 print(doc.limit())
 ```
 
