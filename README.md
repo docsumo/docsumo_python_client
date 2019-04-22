@@ -1,9 +1,7 @@
-# Welcome to utilspy documentation!
-[![Documentation Status](https://readthedocs.org/projects/utilpy/badge/?version=latest)](https://utilpy.readthedocs.io/en/latest/?badge=latest)
+# Welcome to Docsumo python client documentation!
+[![Documentation Status](https://readthedocs.org/projects/docsumo/badge/?version=latest)](https://docsumo.readthedocs.io/en/latest/?badge=latest)
 
-Docsumo.
-
-For detail [Here is Documentation](https://utilpy.readthedocs.io/en/latest/index.html)
+For detail [Here is Documentation](https://docsumo.readthedocs.io/en/latest/index.html)
 
 # Install 
 ```bash
