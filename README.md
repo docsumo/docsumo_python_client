@@ -11,9 +11,9 @@ For detail:
 pip3 install docsumo
 ```
 
-# set API KEY from docsumo Setting page as env variable
+# Set API KEY from docsumo Setting page as env variable `DOCSUMO_API_KEY`
 ```bash
-export DOCSUMO_APi_KEY="test" >>  ~/.bashrc
+export DOCSUMO_API_KEY="test" >>  ~/.bashrc
 source ~/.bashrc
 ```
 

@@ -33,7 +33,7 @@ class Docsumo():
         if url:
             self.url = url
         else:
-            self.url = "https://apptesting.docsumo.com/"
+            self.url = "https://app.docsumo.com/"
 
         self.version = version
         self.headers = {"apikey": self.apikey}
@@ -150,7 +150,7 @@ class Docsumo():
         Args:
             doc_id:``str``
                 Valid Document Id of the document whose detail is required. 
-                
+
         Returns:
             Document details : ``dict`` 
 
