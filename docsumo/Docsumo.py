@@ -47,6 +47,7 @@ class Docsumo:
             if len(date_list[0]) == 4:
                 if len(date_list[1]) == 2 and len(date_list[2]) == 2:
                     return True
+
         raise Exception("format should be 'YYYY-MM-DD'")
 
     def user_detail_credit_limit(self):
@@ -99,7 +100,8 @@ class Docsumo:
             limit:``int``
                 Number of documents whose details are to be fetched.
             status:``list``
-                The status of the documents ``processed`` ``new`` ``review_required`` ``review_skipped``.
+                The status of the documents ``processed`` ``new`` ``review_required`` 
+                ``review_skipped``.
             created_date_greater_than: ``str``
                 format ``YYYY-MM-DD``
             created_date_less_than: ``str``

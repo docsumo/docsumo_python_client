@@ -6,7 +6,11 @@
 Welcome to Docsumo python client documentation!
 ===============================================
 
-Collection of python Docsumo.
+Install
+========
+    .. code-block:: bash
+
+        pip install docsumo
 
 
 Example
