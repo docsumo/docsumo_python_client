@@ -323,7 +323,7 @@ class Docsumo:
             file_path:``str``
                 Path of document to be uploaded.
             doc_type:``str``
-                Document type. Currently supported: (Invoice, Invoice_drip, bank_statements)`` 
+                Document type. Currently supported: ``invoice``, ``invoice_financing``, ``bank_statements`` 
         Returns:
             Document upload details for successful uploads : ``dict``                          
         
@@ -337,7 +337,7 @@ class Docsumo:
                             'status': 'new',
                             'title': 'c05440f11dda4cfba70a856114e12a50.jpg',
                             'type': 'invoice',
-                            'url_original': 'https://hahgd.png',
+                            'url_original': 'https://test.png',
                             'user_id': '5cbcb201a79f0f1d983a34ea'
                     },
                     'error': '',

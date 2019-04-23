@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.abspath("../docsumo/"))
 # constant name <<change these value only>>
 PROJECT_NAME = "Docsumo"
 AUTHOR = "Docsumo"
-VERSION = "0.5.2"
+VERSION = "0.5.4"
 
 
 # -- General configuration ------------------------------------------------
