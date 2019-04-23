@@ -10,7 +10,7 @@ Docsumo Examples
     from docsumo import Docsumo
 
     docsumo = Docsumo()
-    print(docsumo.limit())
+    print(docsumo.user_detail_credit_limit())
     print("====================================")
     print(docsumo.documents_summary())
 

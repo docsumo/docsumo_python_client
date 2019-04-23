@@ -6,7 +6,8 @@ import requests
 from .error import NoAPIKey, UnsupportedDocumentType
 from .config import allowed_file_types
 
-class Docsumo():
+
+class Docsumo:
     """
     Initializes an object of Docsumo class.
 
@@ -22,7 +23,7 @@ class Docsumo():
     """
 
     def __init__(self, apikey=None, url=None, version="v1"):
-        
+
         if apikey:
             self.apikey = apikey
         else:
@@ -38,7 +39,17 @@ class Docsumo():
         self.version = version
         self.headers = {"apikey": self.apikey}
 
-    def limit(self):
+    @staticmethod
+    def _validate_date(date):
+        """validate date has format of YYYY-MM-DD"""
+        date_list = date.split("-")
+        if len(date_list) == 3:
+            if len(date_list[0]) == 4:
+                if len(date_list[1]) == 2 and len(date_list[2]) == 2:
+                    return True
+        raise Exception("format should be 'YYYY-MM-DD'")
+
+    def user_detail_credit_limit(self):
         """
         Provides credit limit information for user.
         Provides the information on the number of documents
@@ -71,7 +82,14 @@ class Docsumo():
         original_response = response.json()
         return original_response
 
-    def documents_list(self, offset=0, limit=20, status=""):
+    def documents_list(
+        self,
+        offset=0,
+        limit=20,
+        status="",
+        created_date_greater_than="",
+        created_date_less_than="",
+    ):
         """
         Returns basic details of all the documents uploaded by the user.
 
@@ -81,7 +99,11 @@ class Docsumo():
             limit:``int``
                 Number of documents whose details are to be fetched.
             status:``list``
-                The status of the documents whose details are to be fetched.
+                The status of the documents ``processed`` ``new`` ``review_required`` ``review_skipped``.
+            created_date_greater_than: ``str``
+                format ``YYYY-MM-DD``
+            created_date_less_than: ``str``
+                format ``YYYY-MM-DD`` 
 
         Returns:
             Document list with details : ``dict``
@@ -133,17 +155,34 @@ class Docsumo():
                 }
         """
         url = "{}/api/{}/eevee/apikey/documents/".format(self.url, self.version)
+
+        # make query string
         querystring = {"offset": offset, "limit": limit, "sort_by": "created_date.desc"}
 
+        # if status add the status
         if status:
             querystring.update({"status": status})
+
+        # if date
+        date = []
+        if created_date_greater_than:
+            _ = self._validate_date(created_date_greater_than)
+            date.append("gte:{}".format(created_date_greater_than))
+
+        if created_date_less_than:
+            _ = self._validate_date(created_date_less_than)
+            date.append("lte:{}".format(created_date_less_than))
+
+        # added date to query string
+        if date:
+            querystring.update({"created_date": date})
 
         response = requests.request(
             "GET", url, headers=self.headers, params=querystring
         )
         return response.json()
 
-    def document_data(self, doc_id):
+    def extracted_data(self, doc_id):
         """
         Returns details of a document whose valid document id is provided in doc_id agrument.
 
