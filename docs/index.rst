@@ -16,6 +16,9 @@ Available method
 ================
     .. code-block:: bash
 
+        from docsumo import Docsumo
+
+        doc = Docsumo()
         doc.user_detail_credit_limit()
         doc.documents_list()
         doc.documents_summary()
