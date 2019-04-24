@@ -12,6 +12,19 @@ Install
 
         pip install docsumo
 
+Available method
+================
+    .. code-block:: bash
+
+        doc.user_detail_credit_limit()
+        doc.documents_list()
+        doc.documents_summary()
+        doc.upload_file(
+                "./data/invoice.pdf",
+                "invoice",
+            )
+        )
+        doc.extracted_data("c511ba245484442fb")
 
 Example
 =======

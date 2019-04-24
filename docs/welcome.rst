@@ -1,6 +1,8 @@
 Install
 ========
-   pip install docsumo
+   .. code-block:: bash
+
+        pip install docsumo
 
 Docsumo Examples
 ================

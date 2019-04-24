@@ -11,7 +11,7 @@ For detail:
 pip3 install docsumo
 ```
 
-# Set API KEY from docsumo setting page as env variable `DOCSUMO_API_KEY`
+# Set API KEY from docsumo setting page as env variable `DOCSUMO_API_KEY` or pass apikey parameter in Docsumo class.
 ```bash
 export DOCSUMO_API_KEY="test" >>  ~/.bashrc
 source ~/.bashrc
@@ -26,12 +26,24 @@ doc = Docsumo()
 # OR
 # doc = Docsumo(apikey="fghhGh56HHJ...")
 
-# To get the user detail & credit limit.
-print(doc.user_detail_credit_limit())
+# available method
+doc.user_detail_credit_limit()
+doc.documents_list()
+doc.documents_summary()
+doc.upload_file(
+        "./data/invoice.pdf",
+        "invoice",
+    )
+)
+doc.extracted_data("c511ba245484442fb")
+
 ```
 
 Output:
 ```
+# To get the user detail & credit limit.
+print(doc.user_detail_credit_limit())
+
 {'error': '',
  'error_code': '',
  'message': '',
