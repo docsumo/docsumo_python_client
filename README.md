@@ -12,6 +12,9 @@ pip3 install docsumo
 ```
 
 # Set API KEY from docsumo setting page as env variable `DOCSUMO_API_KEY` or pass apikey parameter in Docsumo class.
+
+![APIKeY](https://i.imgur.com/hmOcaYp.png)
+
 ```bash
 export DOCSUMO_API_KEY="test" >>  ~/.bashrc
 source ~/.bashrc
