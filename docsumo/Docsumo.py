@@ -371,6 +371,61 @@ class Docsumo:
         original_response = response.json()
         return original_response
 
+    def delete_documents(self, doc_ids):
+        """
+        delete document
+        Args:
+            doc_ids:``list``
+                list of doc_ids 
+
+        Returns: 
+            Doc_ids Detail: `json`
+
+                .. code-block:: json
+            
+                    {
+                        'deleted_doc': [],
+                        'not_deleted_doc': [{'doc_id': 'ghsd',
+                                            'err_message': 'files doesnt exist'}, ..]
+                    }
+        """
+
+        if isinstance(doc_ids, list):
+            if doc_ids:
+                for doc_id in doc_ids:
+                    url = "{}/api/{}/eevee/apikey/delete/{}/".format(
+                        self.url, self.version, doc_id
+                    )
+                    response = requests.request(
+                        "POST", url, headers={"apikey": self.apikey}
+                    )
+                    _ = response.json()
+                return {"deleted_doc": doc_ids, "not_deleted_doc": []}
+            else:
+                raise ValueError("doc_ids should have have atleast one doc_id")
+        else:
+            raise TypeError("doc_ids should be list")
+
+    def delete_documents_all(self):
+        """
+        Delete all documents
+
+        Returns:
+            Deleted Doc list : ``list``
+
+        """
+        docs = self.documents_list(limit=10000)
+        doc_ids = [i["doc_id"] for i in docs["data"]["documents"]]
+        if doc_ids:
+            for doc_id in doc_ids:
+                url = "{}/api/{}/eevee/apikey/delete/{}/".format(
+                    self.url, self.version, doc_id
+                )
+                _ = requests.request("POST", url, headers={"apikey": self.apikey})
+            return doc_ids
+        else:
+            return []
+
     def __str__(self):
         return "Docsumo API"
 
