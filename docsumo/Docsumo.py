@@ -38,6 +38,7 @@ class Docsumo:
 
         self.version = version
         self.headers = {"apikey": self.apikey}
+        self.doc_titles = None
 
     @staticmethod
     def _validate_date(date):
@@ -315,15 +316,16 @@ class Docsumo:
         original_response = response.json()
         return original_response
 
-    def upload_file(self, file_path, doc_type):
+    def upload_file(self, file_path, doc_title):
         """
         Uploads valid documents for processing.
 
         Args:
             file_path:``str``
                 Path of document to be uploaded.
-            doc_type:``str``
-                Document type. Currently supported: ``invoice``, ``invoice_financing``, ``bank_statements`` 
+            doc_title:``str``
+                Document title. You can get title using ``user_detail_credit_limit``.
+
         Returns:
             Document upload details for successful uploads : ``dict``                          
         
@@ -347,14 +349,27 @@ class Docsumo:
                     'status_code': 200
                 }
         """
-        doc_type = doc_type.lower()
+        doc_type = doc_title
 
-        if not doc_type in allowed_file_types:
+        if not self.doc_titles:
+            user_detail = self.user_detail_credit_limit()["data"]
+            doc_titles = user_detail.get("document_types", None)
+
+            if not doc_titles:
+                return {
+                    "error": "no key document_types in method user_detail_credit_limit"
+                }
+            else:
+                self.doc_titles = {i["title"]: i["value"] for i in doc_titles}
+
+        if not doc_type in self.doc_titles:
             raise UnsupportedDocumentType(
                 "{} document type is not supported. Supported types: {}".format(
-                    doc_type, allowed_file_types
+                    doc_type, list(self.doc_titles.keys())
                 )
             )
+        else:
+            doc_type = self.doc_titles[doc_type]
 
         url = "{}/api/{}/eevee/apikey/upload/".format(self.url, self.version)
         headers = {"apikey": self.apikey}
@@ -425,6 +440,103 @@ class Docsumo:
             return doc_ids
         else:
             return []
+
+    def extracted_ocr(self, doc_id):
+        """
+        Returns ocr detail for document
+
+        Args:
+            doc_id:``str``
+                Valid Document Id of the document whose detail is required. 
+
+        Returns:
+            Document ocr details : ``dict`` 
+
+        """
+
+        url = "{}/api/{}/eevee/apikey/ocr/{}/".format(self.url, self.version, doc_id)
+        response = requests.request("GET", url, headers=self.headers)
+        original_response = response.json()
+        return original_response
+
+    def update_item(self, doc_id, item_id, value, position):
+        """
+        update value and position of item
+
+        Args:
+            doc_id:``str``
+                Valid Document Id of the document whose detail is required. 
+            item_id: ``int ``
+                Item id to update
+            value: ``str``
+                new value of filed
+            position: ``list``
+                list of position as ``[x, y, x1, y1]
+
+        Returns:
+            responses : ``dict`` 
+
+        """
+        data = {"value": value, "position": position}
+        url = "{}/api/{}/eevee/apikey/update/item/{}/{}/".format(
+            self.url, self.version, doc_id, item_id
+        )
+        response = requests.request("POST", url, headers=self.headers, json=data)
+        original_response = response.json()
+        return original_response
+
+    def add_item(self, doc_id, item_dict):
+        """
+        add new item to list
+
+        Args:
+            doc_id:``str``
+                Valid Document Id of the document whose detail is required. 
+
+            item_dict: ``dict``
+                complete dict of item
+
+                    ..code-block :: json
+
+                        {
+                            "content": {
+                            "is_valid_format": True, 
+                            "orig_value": "test", 
+                            "page": 1, 
+                            "position": [], 
+                            "validation_source": "human", 
+                            "value": "test"
+                            }, 
+                            "doc_id": "8cb8ad65d6684165b32eed755a416138", 
+                            "filters": {}, 
+                            "format": "%s", 
+                            "format_message": "value should be string", 
+                            "id": 1001005, 
+                            "ignore": False, 
+                            "label": "new label", 
+                            "low_confidence": False, 
+                            "no_items_row": 1, 
+                            "p_title": "Basic Information", 
+                            "p_type": "basic_info", 
+                            "parent_id": 1001, 
+                            "time_spent": 4, 
+                            "type": "string", 
+                            "user_id": "5d4122f07c38c76c74073af7", 
+                            "validation_source": "human"
+                        }
+
+        Returns:
+            Responses : ``dict`` 
+
+        """
+
+        data = item_dict
+        url = "{}/api/{}/eevee/apikey/add/item/{}/".format(
+            self.url, self.version, doc_id
+        )
+        response = requests.request("POST", url, headers=self.headers, json=data)
+        original_response = response.json()
+        return original_response
 
     def __str__(self):
         return "Docsumo API"
