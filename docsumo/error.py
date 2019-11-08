@@ -4,3 +4,7 @@ class NoAPIKey(Exception):
 
 class UnsupportedDocumentType(Exception):
     pass
+
+
+class LengthNotMatched(Exception):
+    pass
