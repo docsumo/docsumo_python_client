@@ -198,90 +198,35 @@ class Docsumo:
 
             .. code-block:: json
 
-                {
-                    'data': {
-                                'Basic Information': {
-                                    'Invoice Number': '307538597',
-                                    'Issue Date': '06/16/2014',
-                                    'Terms': ''
-                                },
-                                'Buyer Detail': {
-                                    'Address': 'Ticket Buyer '
-                                    'Company Street 1 '
-                                    'Adelaide, 55555 '
-                                    'Australia',
-                                    'GST/ VAT Number': '',
-                                    'Name': 'Ticket Buyer Company '
-                                    'Name'
-                                },
-                                'GST & Amount': {
-                                    'Subtotal': '',
-                                    'Tax Rate': '15 %',
-                                    'Tax Total': '',
-                                    'Total Due': 7.04
-                                },
-                                'Line Items': [{
-                                        'Description': 'Item '
-                                        'Description',
-                                        'HSN': '',
-                                        'Quantity': 'Quantity',
-                                        'Subtotal Line': 'Sub-Total '
-                                        '(net)',
-                                        'Tax Rate Line': 'GST',
-                                        'Unit Price': 'Unit Price '
-                                        '(net)'
-                                    },
-                                    {
-                                        'Description': 'Adult Plates',
-                                        'HSN': '',
-                                        'Quantity': '',
-                                        'Subtotal Line': '$5.00',
-                                        'Tax Rate Line': '15 %',
-                                        'Unit Price': '$5.00'
-                                    },
-                                    {
-                                        'Description': '> Eventbrite '
-                                        'Service & '
-                                        'Payment Fees',
-                                        'HSN': '',
-                                        'Quantity': '',
-                                        'Subtotal Line': '$1.29',
-                                        'Tax Rate Line': '0%',
-                                        'Unit Price': ''
-                                    },
-                                    {
-                                        'Description': 'Children',
-                                        'HSN': '',
-                                        'Quantity': '',
-                                        'Subtotal Line': '$0.00',
-                                        'Tax Rate Line': '0%',
-                                        'Unit Price': '$0.00'
-                                    },
-                                    {
-                                        'Description': '> Eventbrite '
-                                        'Service & '
-                                        'Payment Fees',
-                                        'HSN': '',
-                                        'Quantity': '',
-                                        'Subtotal Line': '$0.00',
-                                        'Tax Rate Line': '0%',
-                                        'Unit Price': ''
-                                    }
-                                ],
-                                'Seller Detail': {
-                                    'Address': 'Adelaide, 55555 '
-                                    'Australia',
-                                    'GST/ VAT Number': '',
-                                    'Name': 'Organizer Company '
-                                    'Name'
-                                }
-                            }
-                    'error': '',
-                    'error_code': '',
-                    'message': '',
-                    'status': 'success',
-                    'status_code': 200
-                }
+               {'data': {'invoice': {'date': {'model': '',
+                            'orig_value': '',
+                            'position': [1993, 474, 2086, 495],
+                            'value': '5/15/2018'},
+                        'number': {'model': '',
+                            'orig_value': '',
+                            'position': [1920, 424, 2087, 448],
+                            'value': '19'},
+                        'total_amount_ex': {'model': '',
+                            'orig_value': '',
+                            'position': [1817, 888, 1862, 905],
+                            'value': '284'},
+                        'total_btw': {'model': '',
+                            'orig_value': '',
+                            'position': [1922, 889, 1958, 903],
+                            'value': '56'}},
+                        'transactions': [{'amount': {'orig_value': '', 'position': '', 'value': ''},
+                            'date': {'orig_value': '', 'position': '', 'value': ''},
+                            'product': {'orig_value': '', 'position': '', 'value': ''},
+                            'qty': {'orig_value': '', 'position': '', 'value': ''},
+                            'vat': {'orig_value': '', 'position': '', 'value': ''}}]},
+                        'error': '',
+                        'error_code': '',
+                        'message': '',
+                        'meta_data': {'status': 'reviewing',
+                        'title': '9cdacd30524bcb7b60fa92ac953f216b.pdf',
+                        'user_id': '5e299e55033461d41704b284'},
+                        'status': 'success',
+                        'status_code': 200}
         """
 
         url = "{}/api/{}/eevee/apikey/data/{}/".format(self.url, self.version, doc_id)
@@ -316,7 +261,7 @@ class Docsumo:
         original_response = response.json()
         return original_response
 
-    def upload_file(self, file_path, doc_title):
+    def upload_file(self, file_path, doc_title, user_doc_id=None):
         """
         Uploads valid documents for processing.
         Args:
@@ -324,6 +269,8 @@ class Docsumo:
                 Path of document to be uploaded.
             doc_title:``str``
                 Document title. You can get title using ``user_detail_credit_limit``.
+            user_doc_id: ``str``
+                document id given by user
         Returns:
             Document upload details for successful uploads : ``dict``                          
         
@@ -379,6 +326,8 @@ class Docsumo:
             "type": (None, doc_type),
             "uploaded_from": (None, "api"),
         }
+        if user_doc_id:
+            multipart_form_data["user_doc_id"]: (None, user_doc_id)
 
         response = requests.post(url, files=multipart_form_data, headers=headers)
         original_response = response.json()
@@ -473,7 +422,7 @@ class Docsumo:
         original_response = response.json()
         return original_response
 
-    def add_item(self, doc_id, item_dict):
+    def _add_item(self, doc_id, item_dict):
         """
         add new item to list
         Args:
