@@ -1,9 +1,9 @@
-"""Documo class to upload document and get extracted data"""
+"""Docsumo class to upload document and get extracted data"""
 import os
 
 import requests
 
-from .error import NoAPIKey, UnsupportedDocumentType
+from .error import NoAPIKey, UnsupportedDocumentType, LengthNotMatched
 from .config import allowed_file_types
 
 
@@ -319,13 +319,11 @@ class Docsumo:
     def upload_file(self, file_path, doc_title):
         """
         Uploads valid documents for processing.
-
         Args:
             file_path:``str``
                 Path of document to be uploaded.
             doc_title:``str``
                 Document title. You can get title using ``user_detail_credit_limit``.
-
         Returns:
             Document upload details for successful uploads : ``dict``                          
         
@@ -392,10 +390,8 @@ class Docsumo:
         Args:
             doc_ids:``list``
                 list of doc_ids 
-
         Returns: 
             Doc_ids Detail: `json`
-
                 .. code-block:: json
             
                     {
@@ -424,10 +420,8 @@ class Docsumo:
     def delete_documents_all(self):
         """
         Delete all documents
-
         Returns:
             Deleted Doc list : ``list``
-
         """
         docs = self.documents_list(limit=10000)
         doc_ids = [i["doc_id"] for i in docs["data"]["documents"]]
@@ -444,14 +438,11 @@ class Docsumo:
     def extracted_ocr(self, doc_id):
         """
         Returns ocr detail for document
-
         Args:
             doc_id:``str``
                 Valid Document Id of the document whose detail is required. 
-
         Returns:
             Document ocr details : ``dict`` 
-
         """
 
         url = "{}/api/{}/eevee/apikey/ocr/{}/".format(self.url, self.version, doc_id)
@@ -459,10 +450,9 @@ class Docsumo:
         original_response = response.json()
         return original_response
 
-    def update_item(self, doc_id, item_id, value, position):
+    def _update_item(self, doc_id, item_id, value, position):
         """
         update value and position of item
-
         Args:
             doc_id:``str``
                 Valid Document Id of the document whose detail is required. 
@@ -472,10 +462,8 @@ class Docsumo:
                 new value of filed
             position: ``list``
                 list of position as ``[x, y, x1, y1]
-
         Returns:
             responses : ``dict`` 
-
         """
         data = {"value": value, "position": position}
         url = "{}/api/{}/eevee/apikey/update/item/{}/{}/".format(
@@ -488,16 +476,12 @@ class Docsumo:
     def add_item(self, doc_id, item_dict):
         """
         add new item to list
-
         Args:
             doc_id:``str``
                 Valid Document Id of the document whose detail is required. 
-
             item_dict: ``dict``
                 complete dict of item
-
                     ..code-block :: json
-
                         {
                             "content": {
                             "is_valid_format": True, 
@@ -524,10 +508,8 @@ class Docsumo:
                             "user_id": "5d4122f07c38c76c74073af7", 
                             "validation_source": "human"
                         }
-
         Returns:
             Responses : ``dict`` 
-
         """
 
         data = item_dict
@@ -537,6 +519,125 @@ class Docsumo:
         response = requests.request("POST", url, headers=self.headers, json=data)
         original_response = response.json()
         return original_response
+
+    def upload_files(self, file_paths, doc_title, user_doc_ids=None):
+        """
+        Uploads valid document lists for processing.
+
+        Args:
+            file_paths:``list``
+                List of document paths to be uploaded.
+            doc_type:``str``
+                Document type. Currently supported: (Invoice, Invoice_drip, bank_statements)`` 
+            user_doc_ids: ``list``
+                List of Document Id to be uploaded. Optional
+        Returns:
+            Document upload details for successful uploads : ``dict``                          
+        
+            .. code-block:: json
+            
+                {
+                    'files_uploaded': [{
+                                            'data': {
+                                                'created_at': 'Fri, 08 Nov 2019 07:18:29 GMT',
+                                                'doc_id': 'd96cf1528e214ba595541eefc71f6145',
+                                                'email': 'saugat.adhikari@docsumo.com',
+                                                'status': 'new',
+                                                'title': 'invoice_1.png',
+                                                'type': 'invoice',
+                                                'url_original': 'https://s3.ap-south-1.amazonaws.com/testing-docsumo-documents/5dbfad7b14ffdef4ccea0840/16167/d96cf1528e214ba595541eefc71f6145.png',
+                                                'user_doc_id': 'd96cf1528e214ba595541eefc71f6145',
+                                                'user_id': '5dbfad7b14ffdef4ccea0840'
+                                            },
+                                            'error': '',
+                                            'error_code': '',
+                                            'message': '',
+                                            'status': 'success',
+                                            'status_code': 200
+                                        }],
+                    'files_not_uploaded': [{
+                                            'metadata': {
+                                                'user_doc_id': '7',
+                                                'title': 'invoice_1.png'
+                                                },
+                                                'error': 'Duplicated user_id ',
+                                                'message': '',
+                                                'status': 'fail',
+                                                'status_code': 409
+                                            },
+                                            {
+                                            'metadata': {
+                                                'user_doc_id': '333', 
+                                                'title': 'invoice_2.jpg'
+                                                },
+                                                'error': 'Duplicated user_id ',
+                                                'message': '',
+                                                'status': 'fail',
+                                                'status_code': 409
+                                            }
+                                        ]}
+        """
+        doc_type = doc_title
+        doc_type = doc_type.lower()
+
+        url = "{}/api/{}/eevee/apikey/upload/".format(self.url, self.version)
+        headers = {"apikey": self.apikey}
+
+        correct_response = []
+        error_response = []
+        error_codes = [400, 401, 409]
+
+        if user_doc_ids:
+            if not len(file_paths) == len(user_doc_ids):
+                raise LengthNotMatched(
+                    "Length of File Path and Length of User Doc Id not Equal."
+                )
+        else:
+            user_doc_id = ["" for i in range(len(file_paths))]
+
+        for i in range(len(file_paths)):
+
+            filename = os.path.basename(file_paths[i])
+
+            multipart_form_data = {
+                "files": (filename, open(file_paths[i], "rb")),
+                "type": (None, doc_type),
+                "user_doc_id": (None, user_doc_id[i]),
+                "uploaded_from": (None, "api"),
+            }
+
+            response = requests.post(url, files=multipart_form_data, headers=headers)
+
+            if response.status_code != 200:
+
+                if response.status_code in error_codes:
+                    original_response = response.json()
+                    error = {
+                        "metadata": {"user_doc_id": user_doc_ids[i], "title": filename},
+                        "error": original_response["error"],
+                        "message": original_response["message"],
+                        "status": "fail",
+                        "status_code": original_response["status_code"],
+                    }
+                    error_response.append(error)
+
+                else:
+                    error = {
+                        "metadata": {"user_doc_id": user_doc_ids[i], "title": filename},
+                        "status": "fail",
+                        "status_code": response.status_code,
+                    }
+
+            else:
+                original_response = response.json()
+                correct_response.append(original_response)
+
+        final_response = {
+            "files_uploaded": correct_response,
+            "files_not_uploaded": error_response,
+        }
+
+        return final_response
 
     def __str__(self):
         return "Docsumo API"
