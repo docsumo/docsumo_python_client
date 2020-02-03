@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="docsumo",
-    version="0.5.6",
+    version="0.5.7",
     description="Python client for Docsumo",
     long_description=long_description,
     long_description_content_type="text/markdown",

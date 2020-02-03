@@ -365,7 +365,7 @@ class Docsumo:
         if not doc_type in self.doc_titles:
             raise UnsupportedDocumentType(
                 "{} document type is not supported. Supported types: {}".format(
-                    doc_type, list(self.doc_titles.keys())
+                    doc_type, list(self.doc_titles.values())
                 )
             )
         else:
