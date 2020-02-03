@@ -286,7 +286,7 @@ class Docsumo:
                 Path of document to be uploaded.
             doc_type:``str``
                 Document type. Currently supported: (Invoice, Invoice_drip, bank_statements)`` 
-            doc_id: ``str``
+            user_doc_id: ``str``
                 Document Id. Optional
         Returns:
             Document upload details for successful uploads : ``list of dict``                          
@@ -336,16 +336,16 @@ class Docsumo:
         original_response = response.json()
         return original_response
 
-    def upload_files(self, file_path, doc_type, user_doc_id=""):
+    def upload_files(self, file_paths, doc_type, user_doc_ids=None):
         """
         Uploads valid document lists for processing.
 
         Args:
-            file_path:``list``
+            file_paths:``list``
                 List of document paths to be uploaded.
             doc_type:``str``
                 Document type. Currently supported: (Invoice, Invoice_drip, bank_statements)`` 
-            doc_id: ``list``
+            user_doc_ids: ``list``
                 List of Document Id to be uploaded. Optional
         Returns:
             Document upload details for successful uploads : ``dict``                          
@@ -403,20 +403,20 @@ class Docsumo:
         error_response = []
         error_codes = [400, 401, 409]
 
-        if user_doc_id:
-            if not len(file_path) == len(user_doc_id):
+        if user_doc_ids:
+            if not len(file_paths) == len(user_doc_ids):
                 raise LengthNotMatched(
                     "Length of File Path and Length of User Doc Id not Equal."
                 )
         else:
-            user_doc_id = ["" for i in range(len(file_path))]
+            user_doc_id = ["" for i in range(len(file_paths))]
 
-        for i in range(len(file_path)):
+        for i in range(len(file_paths)):
 
-            filename = os.path.basename(file_path[i])
+            filename = os.path.basename(file_paths[i])
 
             multipart_form_data = {
-                "files": (filename, open(file_path[i], "rb")),
+                "files": (filename, open(file_paths[i], "rb")),
                 "type": (None, doc_type),
                 "user_doc_id": (None, user_doc_id[i]),
                 "uploaded_from": (None, "api"),
@@ -429,7 +429,7 @@ class Docsumo:
                 if response.status_code in error_codes:
                     original_response = response.json()
                     error = {
-                        "metadata": {"user_doc_id": user_doc_id[i], "title": filename},
+                        "metadata": {"user_doc_id": user_doc_ids[i], "title": filename},
                         "error": original_response["error"],
                         "message": original_response["message"],
                         "status": "fail",
@@ -439,7 +439,7 @@ class Docsumo:
 
                 else:
                     error = {
-                        "metadata": {"user_doc_id": user_doc_id[i], "title": filename},
+                        "metadata": {"user_doc_id": user_doc_ids[i], "title": filename},
                         "status": "fail",
                         "status_code": response.status_code,
                     }
