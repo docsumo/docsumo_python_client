@@ -1,10 +1,12 @@
+
 # Welcome to Docsumo python client documentation!
 [![Documentation Status](https://readthedocs.org/projects/docsumo/badge/?version=latest)](https://docsumo.readthedocs.io/en/latest/?badge=latest)
 
-For detail:
+Check us out at [https://www.docsumo.com/](https://www.docsumo.com/)  
+To find out about our web app or to get your API key, check out [https://app.docsumo.com/](https://app.docsumo.com/)
+
 - [Here is Documentation](https://docsumo.readthedocs.io/en/latest/index.html)  
 - [Postman Documentation](https://documenter.getpostman.com/view/4263853/S11LtdGN)
-
 
 # Install 
 ```bash
@@ -13,7 +15,7 @@ pip3 install docsumo
 
 # Set API KEY from docsumo setting page as env variable `DOCSUMO_API_KEY` or pass apikey parameter in Docsumo class.
 
-![APIKeY](https://i.imgur.com/hmOcaYp.png)
+![APIKeY](https://i.imgur.com/hDCh6cU.png)
 
 ```bash
 export DOCSUMO_API_KEY="test" >>  ~/.bashrc
