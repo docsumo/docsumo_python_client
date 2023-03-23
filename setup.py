@@ -5,11 +5,11 @@ with open("README.md", "r") as fh:
 
 setup(
     name="docsumo",
-    version="0.5.8",
+    version="0.5.9",
     description="Python client for Docsumo",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/docsumo/docsumo_python_client",
+    url="https://www.docsumo.com/",
     author="Docsumo",
     author_email="hello@docsumo.com",
     license="MIT",
