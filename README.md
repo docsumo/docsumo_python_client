@@ -2,7 +2,7 @@
 
 # **This Package is No Longer Maintained**
 
-This package is no longer being maintained. For the most up-to-date information and API documentation, please refer to the official Docsumo API [documentation](https://apidocs.docsumo.com/).
+This package is no longer being maintained. For the most up-to-date information and API documentation, please refer to the official Docsumo API [documentation](https://support.docsumo.com/reference/getting-started-with-your-api).
 
 ----
 
